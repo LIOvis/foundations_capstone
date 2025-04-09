@@ -1,0 +1,7 @@
+manager login:
+    email: bitters@skool.edu
+    password: moral_outrage
+
+user login:
+    email: iamzim!!!@skool.edu
+    password: a_genius!!
