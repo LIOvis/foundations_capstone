@@ -73,17 +73,27 @@ Active: %s''' % (self.user_id, self.first_name, self.last_name, self.phone, self
             else:
                 activeyn = 'Yes'
             
-            for i in range(0,9):
-                if row[i] == None:
-                    row[i] == ''
+            sel_last_name = row[2]
+            sel_phone = row[3]
+            sel_hire_date = row[6]
+            sel_date_created = row[7]
+            if sel_last_name == None:
+                sel_last_name = 'n/a'
+            if sel_phone == None:
+                sel_phone = 'n/a'
+            if sel_hire_date == None:
+                sel_hire_date = 'n/a'
+            if sel_date_created == None:
+                sel_date_created = 'n/a'
+            
 
             return f'''User ID: {row[0]}
 First Name: {row[1]}
-Last Name: {row[2]}
-Phone: {row[3]}
+Last Name: {sel_last_name}
+Phone: {sel_phone}
 Email: {row[4]}
-Hire Date: {row[6]}
-Date Created: {row[7]}
+Hire Date: {sel_hire_date}
+Date Created: {sel_date_created}
 Role: {row[8]}
 Active: {activeyn}
 '''
@@ -129,48 +139,217 @@ class Admin(User):
         User.__init__(first_name, last_name, phone, email, password, date_hired, 'Admin', active)
 
 
-    def load_all_records():
+    def load_all_records(self):
         user_response = input('''Which table would you like to view?
 (1) Users
 (2) Competencies
 (3) Assessments
 (4) Competency Assessment Results
-(5) Return to Main Menu''')
+(5) Return to Main Menu
+>>> ''')
         if user_response not in ['1', '2', '3', '4', '5']:
-            print('Please enter a valid response.')
+            print('\nPlease enter a valid response.\n')
         elif user_response == '1':
-            rows = cursor.execute('SELECT user_id, first_name, last_name, date_hired, role, email FROM Users').fetchall()
-            print(f'\n{'ID':<5}{'Name':<35}{'Hire Date':<15}{'Role':<15}Email')
-            for row in rows:
-                sel_user_id = row[0]
-                sel_first_name = row[1]
-                sel_last_name = row[2]
-                sel_hire_date = row[3]
-                sel_role = row[4]
-                sel_email = row[5]
-                if sel_last_name == None:
-                    sel_last_name = ''
-                if sel_hire_date == None:
-                    sel_hire_date = ''
-                full_name = f'{sel_first_name} {sel_last_name}'
-
-                print(f'{sel_user_id:<5}{full_name:<35}{sel_hire_date:<15}{sel_role:<15}{sel_email}')
-            
-            user_response = input('\nEnter an ID to View a User.\n(Press \'Enter\' to Return to Main Menu.)\n>>> ')
-
-            if user_response == '':
+            user_response = input('''
+(1) View All Users
+(2) View All Active Users
+(3) View All Inactive Users
+(4) Return to Main Menu
+>>> ''')
+            if user_response not in ['1', '2', '3', '4']:
+                print('\nPlease enter a valid response.\n')
+            elif user_response == '4':
                 continue
             else:
-                user1.select(user_response)
+                if user_response == '1':
+                    rows = cursor.execute('SELECT user_id, first_name, last_name, date_hired, role, email FROM Users').fetchall()
+                    print(f'\n{'ID':<5}{'Name':<35}{'Hire Date':<15}{'Role':<15}Email')
+                    for row in rows:
+                        sel_user_id = row[0]
+                        sel_first_name = row[1]
+                        sel_last_name = row[2]
+                        sel_hire_date = row[3]
+                        sel_role = row[4]
+                        sel_email = row[5]
+                        if sel_last_name == None:
+                            sel_last_name = 'n/a'
+                        if sel_hire_date == None:
+                            sel_hire_date = 'n/a'
+                        full_name = f'{sel_first_name} {sel_last_name}'
+
+                        print(f'{sel_user_id:<5}{full_name:<35}{sel_hire_date:<15}{sel_role:<15}{sel_email}')
+                    
+                elif user_response == '2':
+                    rows = cursor.execute('SELECT user_id, first_name, last_name, date_hired, role, email FROM Users WHERE active = 1').fetchall()
+                    print(f'\n{'ID':<5}{'Name':<35}{'Hire Date':<15}{'Role':<15}Email')
+                    for row in rows:
+                        sel_user_id = row[0]
+                        sel_first_name = row[1]
+                        sel_last_name = row[2]
+                        sel_hire_date = row[3]
+                        sel_role = row[4]
+                        sel_email = row[5]
+                        if sel_last_name == None:
+                            sel_last_name = 'n/a'
+                        if sel_hire_date == None:
+                            sel_hire_date = 'n/a'
+                        full_name = f'{sel_first_name} {sel_last_name}'
+
+                        print(f'{sel_user_id:<5}{full_name:<35}{sel_hire_date:<15}{sel_role:<15}{sel_email}')
+                    
+                elif user_response == '3':
+                    rows = cursor.execute('SELECT user_id, first_name, last_name, date_hired, role, email FROM Users WHERE active != 1').fetchall()
+                    print(f'\n{'ID':<5}{'Name':<35}{'Hire Date':<15}{'Role':<15}Email')
+                    for row in rows:
+                        sel_user_id = row[0]
+                        sel_first_name = row[1]
+                        sel_last_name = row[2]
+                        sel_hire_date = row[3]
+                        sel_role = row[4]
+                        sel_email = row[5]
+                        if sel_last_name == None:
+                            sel_last_name = 'n/a'
+                        if sel_hire_date == None:
+                            sel_hire_date = 'n/a'
+                        full_name = f'{sel_first_name} {sel_last_name}'
+
+                        print(f'{sel_user_id:<5}{full_name:<35}{sel_hire_date:<15}{sel_role:<15}{sel_email}')
+                    
+                user_response = input('\nEnter an ID to View a User.\n(Press \'Enter\' to Return to Main Menu.)\n>>> ')
+
+                if user_response == '':
+                    continue
+                else:
+                    user1.select(user_response)
+                    print('')
                 
                 
 
         elif user_response == '2':
             rows = cursor.execute('SELECT competency_id, name FROM Competencies').fetchall()
+            print(f'\n{'ID':<5}{'Name'}')
+            for row in rows:
+                print(f'{row[0]:<5}{row[1]}')
+            
+            user_response = input('\nEnter an ID to View a Competency.\n(Press \'Enter\' to Return to Main Menu.)\n>>> ')
+
+            if user_response == '':
+                continue
+            else:
+                query = 'SELECT * FROM Competencies where competency_id = ?'
+                values = user_response
+
+                row = cursor.execute(query, values).fetchone()
+                if row = ():
+                    print('\nPlease Enter a Valid ID.\n')
+                else:
+                    sel_description = row[2]
+                    if sel_description == None:
+                        sel_description = 'n/a'
+                    print(f'''
+Competency ID: {row[0]}
+Name: {row[1]}
+Description:
+{sel_description}
+''')
+
         elif user_response == '3':
             rows = cursor.execute('SELECT assessment_id, competency_id, name FROM Assessments').fetchall()
+            print(f'\n{'Assessment ID':<15}{'Competency ID':<15}{'Name'}')
+            for row in rows:
+                print(f'{row[0]:^15}{row[1]:^15}{row[3]}')
+             
+            user_response = input('\nEnter an ID to View an Assessment\n(Press \'Enter\' to Return to Main Menu.)\n>>> ')
+
+            if user_response == '':
+                continue
+            else:
+                query = 'SELECT * FROM Assessments where assessment_id = ?'
+                values = user_response
+
+                row = cursor.execute(query, values).fetchone()
+                if row = ():
+                    print('\nPlease Enter a Valid ID.\n')
+                elif row != ():
+                    if row[3] == None:
+                        sel_description = 'n/a'
+                    else:
+                        sel_description = row[3]
+                    print(f'''
+Assessment ID: {row[0]}
+Competency ID: {row[1]}
+Name: {row [2]}
+Description:
+{sel_description}
+''')
+
         elif user_response == '4':
-            rows = cursor.execute('SELECT result_id, user_id, assessment_id, score, date_taken FROM Competency_Assessment_Results').fetchall()
+            user_response = input('''
+(1) View All Assessment Results
+(2) View All Results of an Assessment
+(3) View All Results of a User
+(4) Return to Main Menu
+>>> ''')
+            if user_response not in ['1', '2', '3', '4']:
+                print('\nPlease enter a valid response.\n')
+            elif user_response == '4':
+                continue
+            else:
+                if user_response == '1':
+                    rows = cursor.execute('SELECT result_id, user_id, assessment_id, score, date_taken FROM Competency_Assessment_Results').fetchall()
+                    print(f'{'Result ID':<12}{'User ID':<10}{'Assessment ID':<15}{'Score':<8}Date Taken')
+                    for row in rows:
+                        print(f'{row[0]:<12}{row[1]:<10}{row[2]:<15}{row[3]:<8}{row[4]}')
+                    print('')
+                elif user_response == '2':
+                    user_response = input('\nPlease Enter the Assessment ID: ')
+                    query = 'SELECT result_id, assessment_id, user_id, score, date_taken FROM Competency_Assessment_Results WHERE assessment_id = ?'
+                    values = (user_response,)
+                    rows = cursor.execute(query, values).fetchall()
+                    if rows == ():
+                        print('\nPlease Enter a Valid ID.\n')
+                    elif rows != ():
+                        print(f'{'Result ID':<12}{'Assessment ID':<15}{'User ID':<10}{'Score':<8}Date Taken')
+                        for row in rows:
+                            print(f'{row[0]:<12}{row[1]:<15}{row[2]:<10}{row[3]:<8}{row[4]}')
+                        print('')
+                elif user_response == '3':
+                    user_response = input('\nPlease Enter the User ID: ')
+                    query = 'SELECT result_id, user_id, assessment_id, score, date_taken FROM Competency_Assessment_Results WHERE user_id = ?'
+                    values = (user_response,)
+                    rows = cursor.execute(query, values).fetchall()
+                    if rows == ():
+                        print('\nPlease Enter a Valid ID.\n')
+                    elif rows != ():
+                        print(f'{'Result ID':<12}{'User ID':<10}{'Assessment ID':<15}{'Score':<8}Date Taken')
+                        for row in rows:
+                            print(f'{row[0]:<12}{row[1]:<10}{row[2]:<15}{row[3]:<8}{row[4]}')
+                        print('')
+                user_response = input('\nEnter a Result ID to View a Competency Assessment Result\n(Press \'Enter\' to Return to Main Menu.)\n>>> ')
+
+                if user_response == '':
+                    continue
+                else:
+                    query = 'SELECT * FROM Competency_Assessment_Results where result_id = ?'
+                    values = user_response
+
+                    row = cursor.execute(query, values).fetchone()
+                    if row == ():
+                        print('\nPlease Enter a Valid ID.\n')
+                    elif row != ():
+                        if row[5] == None:
+                            sel_manager_id = 'n/a'
+                        else:
+                            sel_manager_id = row[5]
+                        print(f'''
+Result ID: {row[0]}
+User ID: {row[1]}
+Assessment ID: {row[2]}
+Score: {row[3]}
+Date Taken: {row[4]}
+Manager ID: {sel_manager_id}
+''')
+                    
 
         print('\n')
 
@@ -183,6 +362,9 @@ cursor = con.cursor()
 today = date.today()
 today_str = today.strftime('%Y-%m-%d')
 
+
+user_response = ''
+
 sel_user_id = ''
 sel_first_name = ''
 sel_last_name = ''
@@ -193,7 +375,11 @@ sel_hire_date = ''
 sel_date_created = ''
 sel_role = ''
 
-activeyn = 0
+sel_description = ''
+
+sel_manager_id = ''
+
+activeyn = ''
 full_name = ''
 
 query = ''
@@ -208,7 +394,7 @@ values = (email_login, password_login)
 
 login_attempt = cursor.execute(query, values).fetchone()
 
-if login_attempt == ():
+if login_attempt == () or login_attempt[9] != 1:
     print('\nLogin Unsuccessful.\nPlease Try Again.\n')
 else:
     if login_attempt[8].lower == 'admin':
