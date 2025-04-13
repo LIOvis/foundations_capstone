@@ -1,6 +1,8 @@
 import sqlite3
 import bcrypt
 from datetime import date
+import csv
+import os
 
 
 def integ(a,b):
@@ -10,132 +12,21 @@ def integ(a,b):
         return False
     return True
 
+def check_password(saved_password, user_attempt_password):
 
+    if bcrypt.checkpw(user_attempt_password.encode('utf-8'), saved_password):
+        return True
+    return False
 
-class User:
-    def __init__(self, first_name, last_name, phone, email, password, date_hired, role):
-        self.user_id = ''
-        self.first_name = first_name
-        self.last_name = last_name
-        self.phone = phone
-        self.email = email
-        self.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-        self.date_hired = date.today().strftime('%Y-%m-%d')
-        self.date_created = date_created
-        self.role = role
-        self.active = 1
-
-
-    def check_password(self, user_attempt_password):
-        saved_password = self.password
-
-        if bcrypt.checkpw(user_attempt_password.encode('utf-8'), saved_password):
-            return True
+def new_password(saved_password):
+    user_attempt_password = input('\nCurrent Password: ')
+    new = input('\nNew Password: ')
+    if check_password(saved_password, user_attempt_password):
+        password = bcrypt.hashpw(new.encode('utf-8'), bcrypt.gensalt())
+        return password
+    else:
+        print('\nAttempt does not match password.\n')
         return False
-
-    def new_password(self):
-        attempt = input('\nCurrent Password: ')
-        new = input('New Password: ')
-        if self.check_password(attempt):
-            self.password = bcrypt.hashpw(new.encode('utf-8'), bcrypt.gensalt()) 
-            return f'\nNew Password: {new}'
-        return 'Attempt does not match password.'
-
-    def new_email(self):
-        email = input('\nNew Email: ')
-        self.email = email
-        return f'\nNew Email: {self.email}'
-
-    def __repr__(self):
-        if self.active == 1 or self.active == '1':
-            activeyn = 'Yes'
-        else:
-            activeyn = 'No'
-        return '''User ID: %s
-First Name: %s
-Last Name: %s
-Phone: %s
-Email: %s
-Password: %s
-Date Hired: %s
-Date Created: %s
-Role: %s
-Active: %s''' % (self.user_id, self.first_name, self.last_name, self.phone, self.email, self.password, self.date_hired, self.date_created, self.role, activeyn)
-        
-    def select(self, user_id = self.user_id):
-        query = 'SELECT * FROM Users WHERE user_id = ?'
-        value = (user_id,)
-        row = cursor.execute(query, value).fetchone()
-        if row == []:
-            return 'No such user in database.'
-        elif row != []:
-            if row[9] == 0 or row[9] == None:
-                activeyn = 'No'
-            else:
-                activeyn = 'Yes'
-            
-            sel_last_name = row[2]
-            sel_phone = row[3]
-            sel_hire_date = row[6]
-            sel_date_created = row[7]
-            if sel_last_name == None:
-                sel_last_name = 'n/a'
-            if sel_phone == None:
-                sel_phone = 'n/a'
-            if sel_hire_date == None:
-                sel_hire_date = 'n/a'
-            if sel_date_created == None:
-                sel_date_created = 'n/a'
-            
-
-            return f'''User ID: {row[0]}
-First Name: {row[1]}
-Last Name: {sel_last_name}
-Phone: {sel_phone}
-Email: {row[4]}
-Hire Date: {sel_hire_date}
-Date Created: {sel_date_created}
-Role: {row[8]}
-Active: {activeyn}
-'''
-
-    def save(self):
-        query = 'SELECT * FROM Users WHERE email = ?'
-        value = (self.email,)
-        row = cursor.execute(query, value).fetchone()
-        if row == () or row == None:
-            query = 'INSERT INTO Users (first_name, last_name, phone, email, password, date_hired, date_created, role, active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
-            values = (self.first_name, self.last_name, self.phone, self.email, self.password, self.date_hired, self.date_created, self.role, self.active)
-            if integ(query, values) == True:
-                con.commit()
-            else:
-                print('Integrity Error: please make sure all fields meet their constraints.')
-        else:
-            query = 'UPDATE Users SET first_name = ?, last_name = ?, phone = ?, date_hired = ?, date_created = ?, role = ?, email = ?, password = ?, date_created = ? WHERE user_id = ?'
-            values = (self.first_name, self.last_name, self.phone, self.email, self.password, self.date_hired, self.date_created, self.role, self.active, self.user_id)
-            if integ(query, values) == True:
-                con.commit()
-            else:
-                print('Integrity Error: please make sure all fields meet their constraints.')
-
-    def load(self, user_id):
-        query = 'SELECT * FROM Users WHERE user_id = ?'
-        value = (user_id,)
-        row = cursor.execute(query, value).fetchone()
-        self.user_id = row[0]
-        self.first_name = row[1]
-        self.last_name = row[2]
-        self.phone = row[3]
-        self.email = row[4]
-        self.password = row[5]
-        self.date_hired = row[6]
-        self.date_created = row[7]
-        self.role = row[8]
-        self.active = row[9]
-
-
-
-
 
 
 con = sqlite3.connect('competency.db')
@@ -157,6 +48,8 @@ sel_password = ''
 sel_hire_date = ''
 sel_date_created = ''
 sel_role = ''
+sel_description = ''
+sel_manager_id = ''
 
 user_id = ''
 first_name = ''
@@ -175,10 +68,6 @@ assessment_id = ''
 score = ''
 date_taken = ''
 manager_id = ''
-
-sel_description = ''
-
-sel_manager_id = ''
 
 activeyn = ''
 full_name = ''
@@ -223,16 +112,17 @@ What Would You Like To Do?
 (4) Search Users
 (5) Get User Competency Summary
 (6) Get Competency Results Summary
-(7) Logout
-(8) Quit
+(7) Import Competency Assessment Results
+(8) Logout
+(9) Quit
 >>> ''')
                 print('')
-                if user_response not in ['1','2','3','4','5','6','7','8']:
+                if user_response not in ['1','2','3','4','5','6','7','8', '9']:
                     print('Please Enter a Valid Input.\n')
-                elif user_response == '8':
+                elif user_response == '9':
                     logout_quest = 1
                     quit_quest = 1
-                elif user_response == '7':
+                elif user_response == '8':
                     logout_quest = 1
                 elif user_response == '1':
                     user_response = input('''Which table would you like to view?
@@ -315,11 +205,43 @@ What Would You Like To Do?
                             if user_response == '':
                                 continue
                             else:
-                                user1.select(user_response)
-                                print('')
-                            
-                            
+                                query = 'SELECT * FROM Users WHERE user_id = ?'
+                                value = (user_response,)
+                                row = cursor.execute(query, value).fetchone()
+                                if row == ():
+                                    print('No Such User in Database.')
+                                elif row != ():
+                                    if row[9] == 0 or row[9] == None:
+                                        activeyn = 'No'
+                                    else:
+                                        activeyn = 'Yes'
+                                    
+                                    sel_last_name = row[2]
+                                    sel_phone = row[3]
+                                    sel_hire_date = row[6]
+                                    sel_date_created = row[7]
+                                    if sel_last_name == None:
+                                        sel_last_name = 'n/a'
+                                    if sel_phone == None:
+                                        sel_phone = 'n/a'
+                                    if sel_hire_date == None:
+                                        sel_hire_date = 'n/a'
+                                    if sel_date_created == None:
+                                        sel_date_created = 'n/a'
+                                    
 
+                                    print('''User ID: {row[0]}
+First Name: {row[1]}
+Last Name: {sel_last_name}
+Phone: {sel_phone}
+Email: {row[4]}
+Hire Date: {sel_hire_date}
+Date Created: {sel_date_created}
+Role: {row[8]}
+Active: {activeyn}
+
+''')
+                            
                     elif user_response == '2':
                         rows = cursor.execute('SELECT competency_id, name FROM Competencies').fetchall()
                         print(f'\n{'ID':<5}{'Name'}')
@@ -464,10 +386,34 @@ Manager ID: {sel_manager_id}
                         email = input('Email: ')
                         password = input('Password: ')
                         hire_date = input('Hire Date: ')
-                        role = input('Role (User or Admin): ')
+                        role = input('Role: (1) User or (2) Admin: ')
+                        while True:
+                            if first_name == '':
+                                print('\nFirst Name Must Not Be Null.')
+                                first_name = input('First Name: ')
+                            elif email == '':
+                                print('\nEmail Must Not Be Null.')
+                                email = input('Email: ')
+                            elif password == '':
+                                print('\nPassword Must Not Be Null.')
+                                password = input('Password: ')
+                            elif role not in ['1','2']:
+                                print('\nRole Must Be 1 or 2.')
+                                role = input('Role: (1) User or (2) Admin: ')
+                            else:
+                                break
+                        if role == '1':
+                            role = 'User'
+                        elif role == '2':
+                            role = 'Admin'
+                        password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
-                        user2 = User(first_name,last_name, phone, email, password, hire_date, role)
-                        user2.save()
+                        query = 'INSERT INTO Users (first_name, last_name, phone, email, password, hire_date, date_created, role, active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
+                        values = (first_name, last_name, phone, email, password, hire_date, today_str, role, 1)
+                        if integ(query, values) == True:
+                            con.commit()
+                        else:
+                            print('\nIntegrity Error: please make sure all fields meet their constraints.\n')
                     elif user_response == '2':
                         print('')
                         name = input('Name: ')
@@ -477,7 +423,7 @@ Manager ID: {sel_manager_id}
                         if integ(query, values) == True:
                             con.commit()
                         else:
-                            print('Integrity Error: name must not be null.')
+                            print('\nIntegrity Error: name must not be null.\n')
                     elif user_response == '3':
                         competency_id = input('Competency ID: ')
                         name = input('Name: ')
@@ -486,8 +432,8 @@ Manager ID: {sel_manager_id}
                         if integ(query, values) == True:
                             con.commit()
                         else:
-                            print('Integrity Error: please make sure all fields meet their constraints.')
-                    elif user_response == '4':
+                            print('\nIntegrity Error: please make sure all fields meet their constraints.\n')
+                        elif user_response == '4':
                         user_id = input('User ID: ')
                         assessment_id = input('Assessment ID: ')
                         score = input('Score: ')
@@ -498,16 +444,300 @@ Manager ID: {sel_manager_id}
                         if integ(query, values) == True:
                             con.commit()
                         else:
-                            print('Integrity Error: please make sure all fields meet their constraints.')
-
+                            print('\nIntegrity Error: please make sure all fields meet their constraints.')
                 elif user_response == '3':
-                    user1.edit_records()
+                    user_response = input('''
+(1) Edit User
+(2) Edit Competency
+(3) Edit Assessment
+(4) Edit Competency Assessment Result
+(5) Return to Main Menu
+>>> ''')
+                    if user_response not in ['1', '2', '3', '4', '5']:
+                        print('\nPlease Enter a Valid Input.\n')
+                    elif user_response == '5':
+                        continue
+                    elif user_response == '1':
+                        user_response = input('\nPlease Enter the User ID: ')
+                        query = 'SELECT * FROM Users WHERE user_id = ?'
+                        value = (user_response,)
+                        row = cursor.execute(query, value).fetchone()
+                        if row == ():
+                            print('No Such User in Database.')
+                        elif row != ():
+                            if row[9] == 0 or row[9] == None:
+                                activeyn = 'No'
+                            else:
+                                activeyn = 'Yes'
+                            
+                            sel_last_name = row[2]
+                            sel_phone = row[3]
+                            sel_hire_date = row[6]
+                            sel_date_created = row[7]
+                            if sel_last_name == None:
+                                sel_last_name = 'n/a'
+                            if sel_phone == None:
+                                sel_phone = 'n/a'
+                            if sel_hire_date == None:
+                                sel_hire_date = 'n/a'
+                            if sel_date_created == None:
+                                sel_date_created = 'n/a'
+                            
+                            print('What Would You Like to Change?')
+                            print('''(0) User ID: {row[0]}
+(1) First Name: {row[1]}
+(2) Last Name: {sel_last_name}
+(3) Phone: {sel_phone}
+(4) Email: {row[4]}
+(5) Password
+(6) Hire Date: {sel_hire_date}
+(7) Date Created: {sel_date_created}
+(8) Role: {row[8]}
+(9) Active: {activeyn}''')
+                            user_response = input('>>> ')
+                            user_id = row[0]
+                            saved_password = row[5]
+                            query = 'UPDATE Users SET ? = ? WHERE user_id = ?'
+                            if user_response not in ['0','1','2','3','4','5','6','7','8','9']:
+                                print('\nPlease Enter a Valid Input.\n')
+                            elif user_response == '0':
+                                user_response = input('\nNew User ID: ')
+                                values = ('user_id', user_response, user_id)
+                                if integ(query,values) == True:
+                                    con.commit()
+                                else:
+                                    print('\nIntegrity Error: please make sure all fields meet their constraints.\n')
+                            elif user_response == '1':
+                                user_response = input('\nNew First Name: ')
+                                values = ('first_name', user_response, user_id)
+                                if integ(query,values) == True:
+                                    con.commit()
+                                else:
+                                    print('\nIntegrity Error: please make sure all fields meet their constraints.\n')
+                            elif user_response == '2':
+                                user_response = input('\nNew Last Name: ')
+                                values = ('last_name', user_response, user_id)
+                                if integ(query,values) == True:
+                                    con.commit()
+                                else:
+                                    print('\nIntegrity Error: please make sure all fields meet their constraints.\n')
+                            elif user_response == '3':
+                                user_response = input('\nNew Phone: ')
+                                values = ('phone', user_response, user_id)
+                                if integ(query,values) == True:
+                                    con.commit()
+                                else:
+                                    print('\nIntegrity Error: please make sure all fields meet their constraints.\n')
+                            elif user_response == '4':
+                                user_response = input('\nNew Email: ')
+                                values = ('email', user_response, user_id)
+                                if integ(query,values) == True:
+                                    con.commit()
+                                else:
+                                    print('\nIntegrity Error: please make sure all fields meet their constraints.\n')
+                            elif user_response == '5':
+                                password = new_password(saved_password)
+                                if password != False:
+                                    values = ('password', password, user_id)
+                                    if integ(query,values) == True:
+                                        con.commit()
+                                    else:
+                                        print('\nIntegrity Error: please make sure all fields meet their constraints.\n')
+                            elif user_response == '6':
+                                user_response = input('\nNew Hire Date: ')
+                                values = ('hire_date', user_response, user_id)
+                                if integ(query,values) == True:
+                                    con.commit()
+                                else:
+                                    print('\nIntegrity Error: please make sure all fields meet their constraints.\n')
+                            elif user_response == '7':
+                                user_response = input('\nNew Date Created: ')
+                                values = ('date_created', user_response, user_id)
+                                if integ(query,values) == True:
+                                    con.commit()
+                                else:
+                                    print('\nIntegrity Error: please make sure all fields meet their constraints.\n')
+                            elif user_response == '8':
+                                user_response = input('\n(1) Admin\n(2) User\n>>> ')
+                                while True:
+                                    if user_response not in ['1','2']:
+                                        print('\nPlease Enter a Valid Input.')
+                                        user_response = input('(1) Admin\n(2) User\n>>> ')
+                                    else:
+                                        if user_response == '1':
+                                            values = ('role', 'Admin', user_id)
+                                        elif user_response == '2':
+                                            values = ('role', 'User', user_id)
+                                        break
+                                if integ(query,values) == True:
+                                    con.commit()
+                                else:
+                                    print('\nIntegrity Error: please make sure field meets its constraints.\n')
+
+                            elif user_response == '1'
+
                 elif user_response == '4':
-                    user1.search_records()
+                    print('\nSearching Users By Name...')
+                    user_response = input('Search: ')
+                    query = 'SELECT user_id, first_name, last_name, date_hired, role, email FROM Users WHERE first_name LIKE ? or last_name LIKE ?'
+                    values = (f'%{user_response}%', f'%{user_response}%')
+                    rows = cursor.execute(query,values).fetchall()
+                    print(f'\n{'ID':<5}{'Name':<35}{'Hire Date':<15}{'Role':<15}Email')
+                    for row in rows:
+                        sel_user_id = row[0]
+                        sel_first_name = row[1]
+                        sel_last_name = row[2]
+                        sel_hire_date = row[3]
+                        sel_role = row[4]
+                        sel_email = row[5]
+                        if sel_last_name == None:
+                            sel_last_name = 'n/a'
+                        if sel_hire_date == None:
+                            sel_hire_date = 'n/a'
+                        full_name = f'{sel_first_name} {sel_last_name}'
+
+                        print(f'{sel_user_id:<5}{full_name:<35}{sel_hire_date:<15}{sel_role:<15}{sel_email}')
+                    
+                    user_response = input('\nEnter an ID to View a User.\n(Press \'Enter\' to Return to Main Menu.)\n>>> ')
+
+                    if user_response == '':
+                        continue
+                    else:
+                        query = 'SELECT * FROM Users WHERE user_id = ?'
+                        value = (user_response,)
+                        row = cursor.execute(query, value).fetchone()
+                        if row == ():
+                            print('No Such User in Database.')
+                        elif row != ():
+                            if row[9] == 0 or row[9] == None:
+                                activeyn = 'No'
+                            else:
+                                activeyn = 'Yes'
+                            
+                            sel_last_name = row[2]
+                            sel_phone = row[3]
+                            sel_hire_date = row[6]
+                            sel_date_created = row[7]
+                            if sel_last_name == None:
+                                sel_last_name = 'n/a'
+                            if sel_phone == None:
+                                sel_phone = 'n/a'
+                            if sel_hire_date == None:
+                                sel_hire_date = 'n/a'
+                            if sel_date_created == None:
+                                sel_date_created = 'n/a'
+                            
+
+                            print('''User ID: {row[0]}
+First Name: {row[1]}
+Last Name: {sel_last_name}
+Phone: {sel_phone}
+Email: {row[4]}
+Hire Date: {sel_hire_date}
+Date Created: {sel_date_created}
+Role: {row[8]}
+Active: {activeyn}
+
+''')'
                 elif user_response == '5':
-                    user1.user_comp()
+                    user_response = input('\nPlease Enter a User ID: ')
+                    query = 'SELECT * FROM Users WHERE user_id = ?'
+                    values = (user_response,)
+                    row = cursor.execute(query, values).fetchone()
+                    if row == ():
+                        print('\nPlease Enter a Valid ID.\n')
+                    elif row != ():
+                        query = 'SELECT c.competency_id as competency_id, c.name as competency_name, result_id, score, date_taken, manager_id, u.user_id as user_id, first_name, last_name, email FROM Competencies as c JOIN Assessments as a ON a.competency_id = c.competency_id JOIN Competency_Assessment_Results as car ON a.assessment_id = car.assessment_id JOIN Users as u ON u.user_id = car.user_id WHERE u.user_id = ? GROUP BY competency_name ORDER BY c.competency_id, date_taken DESC'
+                        values = (user_response,)
+                        rows = cursor.execute(query, values).fetchall()
+                        count = 0
+                        total = 0
+                        divider = 0
+                        for row in rows:
+                            full_name = f'{row[7]} {row[8]}'
+                            if count = 0:
+                                count = 1
+                                user_id = row[6]
+                                print(f'Name: {full_name}\nUser ID: {row[6]}\nEmail: {row[9]}\n')
+                                print(f'{'Competency ID':<15}{'Competency Name':<20}{'Result ID':<12}{'Score':<8}Date Taken')
+                            total += int(row[3])
+                            divider += 1   
+                            print(f'{row[0]:<15}{row[1]:<20}{row[2]:<12}{row[3]:<8}{row[4]}')
+                        average = total / divider
+                        print(f'\nAverage Score: {round(average, 2)}\n')
+                        while True:
+                            user_response = input('\nExport as CSV? [Y / N]\n>>> ')
+                            if user_response.lower() not in ['y','n']:
+                                print('\nInvalid Input.')
+                            elif user_response.lower() == 'n':
+                                break
+                            elif user_response.lower() == 'y':
+                                query = 'SELECT * FROM Competency_Assessment_Results WHERE user_id = ?'
+                                values = (user_id,)
+                                rows = cursor.execute(query, values).fetchall()
+                                file_name = input('\nFile Name: ')
+                                if '.csv' not in file_name:
+                                    file_name += '.csv'
+                                if os.path.isfile(file_name) == True:
+                                    print('\nFile With This Name Already Exists.\n')
+                                user_response = input('Export With Result ID? [Y / N]\n>>> ')
+                                if user_response.lower() not in ['y', 'n']:
+                                    print('\nInvalid Input.\n')
+                                elif user_response.lower() == 'y':
+                                    with open(file_name, 'w', newline='') as write_file:
+                                        writer = csv.writer(write_file)
+                                        writer.writerow(['result_id', 'user_id', 'assessment_id', 'score', 'date_taken', 'manager_id'])
+                                        for row in rows:
+                                            if row[5] == None:
+                                                manager_id = ''
+                                            elif row[5] != None:
+                                                manager_id = row[6]
+                                            data = [row[0], row[1], row[2], row[3], row[4], manager_id]
+                                            writer.writerow(data)
+                                elif user_response.lower() == 'n':
+                                    with open(file_name, 'w', newline='') as write_file:
+                                        writer = csv.write(write_file)
+                                        writer.writerow(['user_id', 'assessment_id', 'score', 'date_taken', 'manager_id'])
+                                        for row in rows:
+                                            if row[5] == None:
+                                                manager_id = ''
+                                            elif row[5] != None:
+                                                manager_id = row[6]
+                                            data = [row[1], row[2], row[3], row[4], manager_id]
+                                            writer.writerow(data)
+
                 elif user_response == '6':
-                    user1.comp_res()
+                    
+                
+                elif user_response == '7':
+                    file_name = input('Please Enter the CSV File You Would Like to Import: ')
+                    if '.csv' not in file_name:
+                        file_name += '.csv'
+                        print('')
+                    if os.path.isfile(file_name) == True:
+                        with open(file_name, 'r') as read_file:
+                            csvreader = csv.reader(read_file)
+                            header = next(csvreader)
+                            if header != ['user_id', 'assessment_id','score', 'date_taken', 'manager_id'] or header != ['user_id', 'assessment_id','score', 'date_taken']:
+                                print('Header Must Be user_id,assessment_id,score,date_taken,manager_id\nor\nuser_id,assessment_id,score,date_taken\n')
+                            elif header == ['user_id', 'assessment_id','score', 'date_taken', 'manager_id']:
+                                query = 'INSERT INTO Competency_Assessment_Results (user_id, assessment_id, score,date_taken, manager_id) VALUES = (?, ?, ?, ?, ?)'
+                                for row in csvreader:
+                                    values = (row[0], row[1], row[2], row[3], row[4])
+                                    if integ(query, values) = True:
+                                        con.commit()
+                                    else:
+                                        print(f'Record [{row[0]}, {row[1]}, {row[2]}, {row[3]}, {row[4]}] Raised an Integrity Error.\n')
+
+                            elif header == ['user_id', 'assessment_id','score', 'date_taken']:
+                                query = 'INSERT INTO Competency_Assessment_Results (user_id, assessment_id, score,date_taken) VALUES = (?, ?, ?, ?)'
+                                for row in csvreader:
+                                    values = (row[0], row[1], row[2], row[3])
+                                    if integ(query, values) = True:
+                                        con.commit()
+                                    else:
+                                        print(f'Record [{row[0]}, {row[1]}, {row[2]}, {row[3]}] Raised an Integrity Error.\n')
+
 
 
             elif user1.role.lower() == user:
