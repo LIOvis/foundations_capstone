@@ -21,8 +21,8 @@ values = ()
 for i in range(1,101):
     manager_id_list = [1, 2, 5, 7]
     user_id = random.randint(1, 11)
-    assessment_id = random.randint(1,16)
-    random_day = random.randint(12, 18)
+    assessment_id = random.randint(17,32)
+    random_day = random.randint(13, 18)
     date = f'2025-04-{random_day}'
     if user_id == 1:
         manager_id_list = [2, 5, 7]
@@ -34,7 +34,7 @@ for i in range(1,101):
         manager_id_list = [1, 5]
     manager_id = random.choice(manager_id_list)
     
-    if i == 1 or i == 2 or i == 5 or i == 7:
+    if user_id == 1 or user_id == 2 or user_id == 5 or user_id == 7:
         score = random.randint(3,4)
     else:
         score = random.randint(0,4)

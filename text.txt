@@ -5,3 +5,6 @@ manager login:
 user login:
     email: iamzim!!!@skool.edu
     password: a_genius!!
+
+    email: adrenochrome@skool.edu
+    password: prehensile_cup

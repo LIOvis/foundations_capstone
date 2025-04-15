@@ -1,6 +1,7 @@
 import sqlite3
 import bcrypt
 from datetime import date
+import csv
 
 con = sqlite3.connect('competency.db')
 cursor = con.cursor()
@@ -26,8 +27,20 @@ role = ['Admin', 'Admin', 'User', 'User', 'Admin', 'User', 'Admin', 'User', 'Use
 query = 'INSERT INTO Users (user_id, first_name, last_name, phone, email, password, hire_date, date_created, role, active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
 values = ()
 
-for i in range(0,11):
-    values = (i+1,first_name[i], last_name[i], phone[i], email[i], bcrypt.hashpw(password[i].encode('utf-8'), bcrypt.gensalt()), hire_date[i], today_str, role[i], 1)
-    cursor.execute(query, values)
-    con.commit()
+# for i in range(0,11):
+#     values = (i+1,first_name[i], last_name[i], phone[i], email[i], bcrypt.hashpw(password[i].encode('utf-8'), bcrypt.gensalt()), hire_date[i], today_str, role[i], 1)
+#     cursor.execute(query, values)
+#     con.commit()
     
+# rows = cursor.execute('SELECT user_id FROM Users WHERE role = \'Admin\'').fetchall()
+
+# count = 0
+
+# for row in rows:
+#     if 1 in row:
+#         count += 1
+
+# with open('space_boy_ucs.csv', 'r') as read_file:
+#     reader = csv.reader(read_file)
+#     for row in reader:
+#         print(row[0])

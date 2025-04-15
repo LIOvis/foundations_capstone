@@ -13,7 +13,10 @@ print(len(description_list))
 query = 'INSERT INTO Competencies (competency_id, name, description) VALUES (?, ?, ?)'
 values = ()
 
-for i in range(0,16):
-    values = (i+1, name_list[i], description_list[i])
-    cursor.execute(query, values)
-    con.commit()
+# for i in range(0,16):
+#     values = (i+1, name_list[i], description_list[i])
+#     cursor.execute(query, values)
+#     con.commit()
+
+row = cursor.execute('SELECT * FROM Users').fetchone()
+print(row)
