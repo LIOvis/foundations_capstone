@@ -1,0 +1,49 @@
+manager logins:
+    user_id: 1
+    email: bitters@skool.edu
+    password: moral_outrage
+
+    user_id: 2
+    email: theprofessor@mlabs.org
+    password: my_poor_insane_son
+    
+    user_id: 5
+    email: toolofdoom@sir.org
+    password: temporarily_pizzalessless
+    
+    user_id: 7
+    email: headguard@mlabs
+    password: emissary_of_the_shadowhog
+
+user logins:
+    user_id: 3
+    email: iamzim!!!@skool.edu
+    password: a_genius!!
+
+    user_id: 4
+    email: mytaquitos!!!@sir.org
+    password: i_dont_know
+
+    user_id: 6
+    email: notaclone@skool.edu
+    password: zim_is_an_alien!!!
+
+    user_id: 8
+    email: eyelessthorns@skool.edu
+    password: mash_potato_hater
+    
+    user_id: 9
+    email: braced@skool.edu
+    password: can_i_have_a_soda?
+
+    user_id: 10
+    email: accidentaloverlord@skool.edu
+    password: hate_in_a_cup
+
+    user_id: 11
+    email: notcocofange@skool.edu
+    password: gnafococmai
+
+    user_id: 12
+    email: adrenochrome@skool.edu
+    password: prehensile_cup

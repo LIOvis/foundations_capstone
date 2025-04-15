@@ -111,10 +111,9 @@ while True:
     else:
         logout_quest = 0
         while True:
-            login_attempt = cursor.execute('SELECT * FROM Users WHERE user_id = 1').fetchone()
             if logout_quest == 1:
                 break
-            if login_attempt[8].lower() == 'admin':
+            elif login_attempt[8].lower() == 'admin':
                 user_response = input('''
 What Would You Like To Do?
 
@@ -129,7 +128,7 @@ What Would You Like To Do?
 (9) Quit
 >>> ''')
                 if user_response not in ['1', '2', '3', '4', '5', '6', '7', '8', '9']:
-                    print('\nPlease Enter a Valid Input.\n')
+                    print('\nInvalid Input.\n')
                 elif user_response == '9':
                     logout_quest = 1
                     quit_quest = 1
@@ -146,7 +145,7 @@ Which table would you like to view?
 (5) Return to Main Menu
 >>> ''')
                     if user_response not in ['1', '2', '3', '4', '5']:
-                        print('\nPlease enter a valid response.\n')
+                        print('\nInvalid response.\n')
                     elif user_response == '1':
                         user_response = input('''
 (1) View All Users
@@ -155,7 +154,7 @@ Which table would you like to view?
 (4) Return to Main Menu
 >>> ''')
                         if user_response not in ['1', '2', '3', '4']:
-                            print('\nPlease enter a valid response.\n')
+                            print('\nInvalid response.\n')
                         elif user_response == '4':
                             continue
                         else:
@@ -291,7 +290,7 @@ Active: {activeyn}''')
 
                             row = cursor.execute(query, values).fetchone()
                             if row == ():
-                                print('\nPlease Enter a Valid ID.\n')
+                                print('\nInvalid ID.\n')
                             else:
                                 sel_description = row[2]
                                 if sel_description == None:
@@ -319,7 +318,7 @@ Description:
 
                             row = cursor.execute(query, values).fetchone()
                             if row == ():
-                                print('\nPlease Enter a Valid ID.\n')
+                                print('\nInvalid ID.\n')
                             elif row != ():
                                 print(f'''
 Assessment ID: {row[0]}
@@ -336,7 +335,7 @@ Date Created: {row[3]}
 (4) Return to Main Menu
 >>> ''')
                         if user_response not in ['1', '2', '3', '4']:
-                            print('\nPlease enter a valid response.\n')
+                            print('\nInvalid response.\n')
                         elif user_response == '4':
                             continue
                         else:
@@ -352,7 +351,7 @@ Date Created: {row[3]}
                                 values = (user_response,)
                                 rows = cursor.execute(query, values).fetchall()
                                 if rows == ():
-                                    print('\nPlease Enter a Valid ID.\n')
+                                    print('\nInvalid ID.\n')
                                 elif rows != ():
                                     print(f'{'Result ID':<12}{'Assessment ID':<15}{'User ID':<10}{'Score':<8}Date Taken')
                                     for row in rows:
@@ -364,7 +363,7 @@ Date Created: {row[3]}
                                 values = (user_response,)
                                 rows = cursor.execute(query, values).fetchall()
                                 if rows == ():
-                                    print('\nPlease Enter a Valid ID.\n')
+                                    print('\nInvalid ID.\n')
                                 elif rows != ():
                                     print(f'{'Result ID':<12}{'User ID':<10}{'Assessment ID':<15}{'Score':<8}Date Taken')
                                     for row in rows:
@@ -380,7 +379,7 @@ Date Created: {row[3]}
 
                                 row = cursor.execute(query, values).fetchone()
                                 if row == ():
-                                    print('\nPlease Enter a Valid ID.\n')
+                                    print('\nInvalid ID.\n')
                                 elif row != ():
                                     if row[5] == None:
                                         sel_admin_id = 'n/a'
@@ -407,7 +406,7 @@ Admin ID: {sel_admin_id}
 (5) Return to Main Menu
 >>> ''')
                     if user_response not in ['1', '2', '3', '4', '5']:
-                        print('\nPlease Enter a Valid Input.\n')
+                        print('\nInvalid Input.\n')
                     elif user_response == '5':
                         continue
                     elif user_response == '1':
@@ -420,21 +419,18 @@ Admin ID: {sel_admin_id}
                         password = input('Password: ')
                         hire_date = input('Hire Date (yyyy-mm-dd): ')
                         role = input('Role: (1) User or (2) Admin: ')
-                        while True:
-                            if first_name == '':
-                                print('\nFirst Name Must Not Be Null.')
-                                first_name = input('First Name: ')
-                            elif email == '':
-                                print('\nEmail Must Not Be Null.')
-                                email = input('Email: ')
-                            elif password == '':
-                                print('\nPassword Must Not Be Null.')
-                                password = input('Password: ')
-                            elif role not in ['1', '2']:
-                                print('\nRole Must Be 1 or 2.')
-                                role = input('Role: (1) User or (2) Admin: ')
-                            else:
-                                break
+                        if first_name == '':
+                            print('\nFirst Name Must Not Be Null.')
+                            first_name = input('First Name: ')
+                        if email == '':
+                            print('\nEmail Must Not Be Null.')
+                            email = input('Email: ')
+                        if password == '':
+                            print('\nPassword Must Not Be Null.')
+                            password = input('Password: ')
+                        if role not in ['1', '2']:
+                            print('\nRole Must Be 1 or 2.')
+                            role = input('Role: (1) User or (2) Admin: ')
                         if role == '1':
                             role = 'User'
                         elif role == '2':
@@ -502,7 +498,7 @@ Admin ID: {sel_admin_id}
 (5) Return to Main Menu
 >>> ''')
                     if user_response not in ['1', '2', '3', '4', '5']:
-                        print('\nPlease Enter a Valid Input.\n')
+                        print('\nInvalid Input.\n')
                     elif user_response == '5':
                         continue
                     elif user_response == '1':
@@ -546,7 +542,7 @@ Admin ID: {sel_admin_id}
                             user_id = row[0]
                             saved_password = row[5]
                             if user_response not in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
-                                print('\nPlease Enter a Valid Input.\n')
+                                print('\nInvalid Input.\n')
                             elif user_response == '0':
                                 query = 'UPDATE Users SET user_id = ? WHERE user_id = ?'
                                 user_response = input('\nNew User ID: ')
@@ -622,16 +618,14 @@ Admin ID: {sel_admin_id}
                             elif user_response == '8':
                                 query = 'UPDATE Users SET role = ? WHERE user_id = ?'
                                 user_response = input('\n(1) Admin\n(2) User\n>>> ')
-                                while True:
-                                    if user_response not in ['1', '2']:
-                                        print('\nPlease Enter a Valid Input.\n')
-                                        user_response = input('(1) Admin\n(2) User\n>>> ')
-                                    else:
-                                        if user_response == '1':
-                                            values = ('Admin', user_id)
-                                        elif user_response == '2':
-                                            values = ('User', user_id)
-                                        break
+                                if user_response not in ['1', '2']:
+                                    print('\nInvalid Input.\n')
+                                    user_response = input('(1) Admin\n(2) User\n>>> ')
+                                else:
+                                    if user_response == '1':
+                                        values = ('Admin', user_id)
+                                    elif user_response == '2':
+                                        values = ('User', user_id)
                                 if integ(query,values) == True:
                                     print('')
                                     con.commit()
@@ -640,31 +634,29 @@ Admin ID: {sel_admin_id}
                             elif user_response == '9':
                                 query = 'UPDATE Users SET active = ? WHERE user_id = ?'
                                 if activeyn == 'No':
-                                    while True:
-                                        user_response = input('\nReactivate User?\n[Y / N]\n>>> ')
-                                        if user_response.lower() not in ['y', 'n']:
-                                            print('\nInvalid Input.')
-                                        else:
-                                            if user_response.lower() == 'y':
-                                                values = (1, user_id)
-                                                if integ(query, values) == True:
-                                                    con.commit()
-                                                else:
-                                                    print('\nIntegrity Error: please make sure field meets its constraints.\n')
-                                            break
+                                    user_response = input('\nReactivate User?\n[Y / N]\n>>> ')
+                                    if user_response.lower() not in ['y', 'n']:
+                                        print('\nInvalid Input.')
+                                    else:
+                                        if user_response.lower() == 'y':
+                                            values = (1, user_id)
+                                            if integ(query, values) == True:
+                                                con.commit()
+                                            else:
+                                                print('\nIntegrity Error: please make sure field meets its constraints.\n')
+                                            
                                 if activeyn == 'Yes':
-                                    while True:
-                                        user_response = input('\nDeactivate User?\n[Y / N]\n>>> ')
-                                        if user_response.lower() not in ['y', 'n']:
-                                            print('\nInvalid Input.')
-                                        else:
-                                            if user_response.lower() == 'y':
-                                                values = (0, user_id)
-                                                if integ(query, values) == True:
-                                                    con.commit()
-                                                else:
-                                                    print('\nIntegrity Error: please make sure field meets its constraints.\n')
-                                            break
+                                    user_response = input('\nDeactivate User?\n[Y / N]\n>>> ')
+                                    if user_response.lower() not in ['y', 'n']:
+                                        print('\nInvalid Input.')
+                                    else:
+                                        if user_response.lower() == 'y':
+                                            values = (0, user_id)
+                                            if integ(query, values) == True:
+                                                con.commit()
+                                            else:
+                                                print('\nIntegrity Error: please make sure field meets its constraints.\n')
+                                        
                     elif user_response == '2':
                         user_response = input('\nPlease Enter the Competency ID: ')
                         query = 'SELECT * FROM Competencies where competency_id = ?'
@@ -941,7 +933,7 @@ Active: {activeyn}
                         values = (user_response,)
                         row = cursor.execute(query, values).fetchone()
                         if row == ():
-                            print('\nPlease Enter a Valid ID.\n')
+                            print('\nInvalid ID.\n')
                         elif row != ():
                             query = 'SELECT c.competency_id as competency_id, c.name as competency_name, result_id, score, MAX(date_taken) as date_taken, admin_id, u.user_id as user_id, first_name, last_name, email FROM Competencies as c JOIN Assessments as a ON a.competency_id = c.competency_id JOIN Competency_Assessment_Results as car ON a.assessment_id = car.assessment_id JOIN Users as u ON u.user_id = car.user_id WHERE u.user_id = ? GROUP BY competency_name ORDER BY c.competency_id'
                             values = (user_response,)
@@ -991,7 +983,7 @@ Active: {activeyn}
                             print('')
 
                 elif user_response == '6':
-                    user_response == input('''
+                    user_response = input('''
 (1) Export User Assessment Results
 (2) Export Competency Assessment Results
 (3) Export Users
@@ -1039,7 +1031,6 @@ Active: {activeyn}
                                             admin_id = row[5]
                                         data = [row[0], row[1], row[2], row[3], row[4], admin_id]
                                         writer.writerow(data)
-                                    break
                             elif user_response.lower() == 'n':
                                 with open(file_name, 'w', newline='') as write_file:
                                     writer = csv.writer(write_file)
@@ -1087,7 +1078,6 @@ Active: {activeyn}
                                             admin_id = row[5]
                                         data = [row[0], row[1], row[2], row[3], row[4], admin_id]
                                         writer.writerow(data)
-                                    break
                             elif user_response.lower() == 'n':
                                 with open(file_name, 'w', newline='') as write_file:
                                     writer = csv.writer(write_file)
@@ -1099,7 +1089,6 @@ Active: {activeyn}
                                             admin_id = row[5]
                                         data = [row[1], row[2], row[3], row[4], admin_id]
                                         writer.writerow(data)
-                                    break
                     elif user_response == '3':
                         user_response = input('\nUser ID: ')
                         overwrite_quest = 0
@@ -1152,7 +1141,6 @@ Active: {activeyn}
                                             active = row[9]
                                         data = [row[0], row[1], last_name, phone, row[4], row[5], hire_date, date_created, row[8], active]
                                         writer.writerow(data)
-                                    break
                             elif user_response.lower() == 'n':
                                 with open(file_name, 'w', newline='') as write_file:
                                     writer = csv.writer(write_file)
@@ -1180,7 +1168,6 @@ Active: {activeyn}
                                             active = row[9]
                                         data = [row[1], last_name, phone, row[4], row[5], hire_date, date_created, row[8], active]
                                         writer.writerow(data)
-                                    break
                     elif user_response == '4':
                         user_response = input('\nCompetency ID: ')
                         overwrite_quest = 0
@@ -1217,7 +1204,6 @@ Active: {activeyn}
                                             description = row[2]
                                         data = [row[0], row[1], row[2], row[3], row[4], admin_id]
                                         writer.writerow(data)
-                                    break
                             elif user_response.lower() == 'n':
                                 with open(file_name, 'w', newline='') as write_file:
                                     writer = csv.writer(write_file)
@@ -1261,7 +1247,6 @@ Active: {activeyn}
                                     for row in rows:
                                         data = [row[0], row[1], row[2], row[3]]
                                         writer.writerow(data)
-                                    break
                             elif user_response.lower() == 'n':
                                 with open(file_name, 'w', newline='') as write_file:
                                     writer = csv.writer(write_file)
@@ -1437,7 +1422,7 @@ What Would You Like To Do?
 (5) Quit
 >>> ''')
                 if user_response not in ['1', '2', '3', '4', '5']:
-                    print('\nPlease Enter a Valid Input.\n')
+                    print('\nInvalid Input.\n')
                 elif user_response == '5':
                     logout_quest = 1
                     quit_quest = 1
@@ -1579,56 +1564,54 @@ Active: {activeyn}
                             print(f'{row[0]:<15}{row[1]:<20}{row[2]:<12}{row[3]:<8}{row[4]}')
                         average = total / divider
                         print(f'\nAverage Score: {round(average, 2)}\n')
-                        while True:
-                            user_response = input('\nExport as CSV? [Y / N]\n>>> ')
-                            if user_response.lower() not in ['y', 'n']:
-                                print('\nInvalid Input.')
-                            elif user_response.lower() == 'n':
-                                break
-                            elif user_response.lower() == 'y':
-                                query = 'SELECT * FROM Competency_Assessment_Results WHERE user_id = ?'
-                                values = (user_id,)
-                                rows = cursor.execute(query, values).fetchall()
-                                file_name = input('\nFile Name: ')
-                                if '.csv' not in file_name:
-                                    file_name += '.csv'
-                                is_file = os.path.isfile(file_name)
-                                if is_file == True:
-                                    print('\nFile With This Name Already Exists.\n')
-                                    user_response = input(f'Overwrite Current {file_name}? [Y / N]\n>>> ')
-                                    if user_response not in ['y', 'n']:
-                                        print('\nInvalid Input.\n')
-                                    elif user_response.lower() == 'y':
-                                        overwrite_quest = 1
-                                    elif user_response.lower() == 'n':
-                                        continue
-                                elif is_file != True:
+
+                        user_response = input('\nExport as CSV? [Y / N]\n>>> ')
+                        if user_response.lower() not in ['y', 'n']:
+                            print('\nInvalid Input.')
+                        elif user_response.lower() == 'n':
+                            continue
+                        elif user_response.lower() == 'y':
+                            query = 'SELECT * FROM Competency_Assessment_Results WHERE user_id = ?'
+                            values = (user_id,)
+                            rows = cursor.execute(query, values).fetchall()
+                            file_name = input('\nFile Name: ')
+                            if '.csv' not in file_name:
+                                file_name += '.csv'
+                            is_file = os.path.isfile(file_name)
+                            if is_file == True:
+                                print('\nFile With This Name Already Exists.\n')
+                                user_response = input(f'Overwrite Current {file_name}? [Y / N]\n>>> ')
+                                if user_response not in ['y', 'n']:
+                                    print('\nInvalid Input.\n')
+                                elif user_response.lower() == 'y':
                                     overwrite_quest = 1
-                                if overwrite_quest == 1:
-                                    user_response = input('\nExport With Result ID? [Y / N]\n>>> ')
-                                    if user_response.lower() not in ['y', 'n']:
-                                        print('\nInvalid Input.\n')
-                                    elif user_response.lower() == 'y':
-                                        with open(file_name, 'w', newline='') as write_file:
-                                            writer = csv.writer(write_file)
-                                            writer.writerow(['result_id', 'user_id', 'assessment_id', 'score', 'date_taken', 'admin_id'])
-                                            for row in rows:
-                                                if row[5] == None:
-                                                    admin_id = ''
-                                                elif row[5] != None:
-                                                    admin_id = row[5]
-                                                data = [row[0], row[1], row[2], row[3], row[4], admin_id]
-                                                writer.writerow(data)
-                                            break
-                                    elif user_response.lower() == 'n':
-                                        with open(file_name, 'w', newline='') as write_file:
-                                            writer = csv.writer(write_file)
-                                            writer.writerow(['user_id', 'assessment_id', 'score', 'date_taken', 'admin_id'])
-                                            for row in rows:
-                                                if row[5] == None:
-                                                    admin_id = ''
-                                                elif row[5] != None:
-                                                    admin_id = row[5]
-                                                data = [row[1], row[2], row[3], row[4], admin_id]
-                                                writer.writerow(data)
-                                            break
+                                elif user_response.lower() == 'n':
+                                    continue
+                            elif is_file != True:
+                                overwrite_quest = 1
+                            if overwrite_quest == 1:
+                                user_response = input('\nExport With Result ID? [Y / N]\n>>> ')
+                                if user_response.lower() not in ['y', 'n']:
+                                    print('\nInvalid Input.\n')
+                                elif user_response.lower() == 'y':
+                                    with open(file_name, 'w', newline='') as write_file:
+                                        writer = csv.writer(write_file)
+                                        writer.writerow(['result_id', 'user_id', 'assessment_id', 'score', 'date_taken', 'admin_id'])
+                                        for row in rows:
+                                            if row[5] == None:
+                                                admin_id = ''
+                                            elif row[5] != None:
+                                                admin_id = row[5]
+                                            data = [row[0], row[1], row[2], row[3], row[4], admin_id]
+                                            writer.writerow(data)
+                                elif user_response.lower() == 'n':
+                                    with open(file_name, 'w', newline='') as write_file:
+                                        writer = csv.writer(write_file)
+                                        writer.writerow(['user_id', 'assessment_id', 'score', 'date_taken', 'admin_id'])
+                                        for row in rows:
+                                            if row[5] == None:
+                                                admin_id = ''
+                                            elif row[5] != None:
+                                                admin_id = row[5]
+                                            data = [row[1], row[2], row[3], row[4], admin_id]
+                                            writer.writerow(data)
