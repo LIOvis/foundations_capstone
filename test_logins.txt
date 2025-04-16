@@ -1,4 +1,4 @@
-manager logins:
+admin logins:
     user_id: 1
     email: bitters@skool.edu
     password: moral_outrage

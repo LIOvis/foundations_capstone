@@ -27,6 +27,8 @@ def check_password(saved_password, user_attempt_password):
 def new_password(saved_password):
     user_attempt_password = input('\nCurrent Password: ')
     new = input('\nNew Password: ')
+    if new == '':
+    new = 'NULL'
     if check_password(saved_password, user_attempt_password):
         password = bcrypt.hashpw(new.encode('utf-8'), bcrypt.gensalt())
         return password
@@ -115,7 +117,7 @@ while True:
                 break
             elif login_attempt[8].lower() == 'admin':
                 user_response = input('''
-What Would You Like To Do?
+Main Menu
 
 (1) View Records
 (2) Create Records
@@ -138,10 +140,10 @@ What Would You Like To Do?
                     user_response = input('''
 Which table would you like to view?
 
-(1) Users
-(2) Competencies
-(3) Assessments
-(4) Competency Assessment Results
+(1) View Users
+(2) View Competencies
+(3) View Assessments
+(4) View Competency Assessment Results
 (5) Return to Main Menu
 >>> ''')
                     if user_response not in ['1', '2', '3', '4', '5']:
@@ -435,6 +437,10 @@ Admin ID: {sel_admin_id}
                             role = 'User'
                         elif role == '2':
                             role = 'Admin'
+                        if last_name == '':
+                        last_name = 'NULL'
+                        if phone == '':
+                        phone = 'NULL'
                         password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
                         query = 'INSERT INTO Users (first_name, last_name, phone, email, password, hire_date, date_created, role, active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
@@ -447,6 +453,8 @@ Admin ID: {sel_admin_id}
                         print('')
                         name = input('Name: ')
                         description = input('Description: ')
+                        if description == '':
+                            description = 'NULL'
                         query = 'INSERT INTO Competencies (name, description) VALUES (?, ?)'
                         values = (name, description)
                         if integ(query, values) == True:
@@ -470,25 +478,29 @@ Admin ID: {sel_admin_id}
                         score = input('Score: ')
                         date_taken = input('Date Taken (yyyy-mm-dd): ')
                         user_response = input('Admin ID: ')
-                        admin_id = str_to_int(user_response)
-                        if admin_id == False:
-                            print('\nInvalid Input.\n')
-                        else:
-                            rows = cursor.execute('SELECT user_id FROM Users WHERE role = \'Admin\'').fetchall()
-                            rows = cursor.execute('SELECT * FROM Users WHERE role = Admin')
-                            count = 0
-                            for row in rows:
-                                if admin_id in row:
-                                    count = 1
-                            if count != 1:
-                                print('\nAdmin ID Does Not Belong to an Admin.\n')
-                            elif count == 1:
-                                query = 'INSERT INTO Competency_Assessment_Results (user_id, assessment_id, score, date_taken, admin_id) VALUES (?, ?, ?, ?, ?)'
-                                values = (user_id, assessment_id, score, date_taken, admin_id)
-                                if integ(query, values) == True:
-                                    con.commit()
-                                else:
-                                    print('\nIntegrity Error: please make sure all fields meet their constraints.')
+                        count = 0
+                        if admin_id == '':
+                            admin_id = 'NULL'
+                            count = 1
+                        elif admin_id != '':
+                            admin_id = str_to_int(user_response)
+                            if admin_id == False:
+                                print('\nInvalid Input.\n')
+                            else:
+                                rows = cursor.execute('SELECT user_id FROM Users WHERE role = \'Admin\'').fetchall()
+                                rows = cursor.execute('SELECT * FROM Users WHERE role = Admin')
+                                for row in rows:
+                                    if admin_id in row:
+                                        count = 1
+                        if count != 1:
+                            print('\nAdmin ID Does Not Belong to an Admin.\n')
+                        elif count == 1:
+                            query = 'INSERT INTO Competency_Assessment_Results (user_id, assessment_id, score, date_taken, admin_id) VALUES (?, ?, ?, ?, ?)'
+                            values = (user_id, assessment_id, score, date_taken, admin_id)
+                            if integ(query, values) == True:
+                                con.commit()
+                            else:
+                                print('\nIntegrity Error: please make sure all fields meet their constraints.')
                 elif user_response == '3':
                     user_response = input('''
 (1) Edit User
@@ -528,7 +540,8 @@ Admin ID: {sel_admin_id}
                                 sel_date_created = 'n/a'
                             
                             print('\nWhat Would You Like to Change?\n')
-                            print(f'''(0) User ID: {row[0]}
+                            print(f'''
+(0) User ID: {row[0]}
 (1) First Name: {row[1]}
 (2) Last Name: {sel_last_name}
 (3) Phone: {sel_phone}
@@ -555,6 +568,8 @@ Admin ID: {sel_admin_id}
                             elif user_response == '1':
                                 query = 'UPDATE Users SET first_name = ? WHERE user_id = ?'
                                 user_response = input('\nNew First Name: ')
+                                if user_response == '':
+                                    user_response = 'NULL'
                                 values = (user_response, user_id)
                                 if integ(query,values) == True:
                                     print('')
@@ -564,6 +579,8 @@ Admin ID: {sel_admin_id}
                             elif user_response == '2':
                                 query = 'UPDATE Users SET last_name = ? WHERE user_id = ?'
                                 user_response = input('\nNew Last Name: ')
+                                if user_response == '':
+                                    user_response = 'NULL'
                                 values = (user_response, user_id)
                                 if integ(query,values) == True:
                                     print('')
@@ -573,6 +590,8 @@ Admin ID: {sel_admin_id}
                             elif user_response == '3':
                                 query = 'UPDATE Users SET phone = ? WHERE user_id = ?'
                                 user_response = input('\nNew Phone: ')
+                                if user_response == '':
+                                    user_response = 'NULL'
                                 values = (user_response, user_id)
                                 if integ(query,values) == True:
                                     print('')
@@ -582,6 +601,8 @@ Admin ID: {sel_admin_id}
                             elif user_response == '4':
                                 query = 'UPDATE Users SET email = ? WHERE user_id = ?'
                                 user_response = input('\nNew Email: ')
+                                if user_response == '':
+                                    user_response = 'NULL'
                                 values = (user_response, user_id)
                                 if integ(query, values) == True:
                                     con.commit()
@@ -600,6 +621,8 @@ Admin ID: {sel_admin_id}
                             elif user_response == '6':
                                 query = 'UPDATE Users SET hire_date = ? WHERE user_id = ?'
                                 user_response = input('\nNew Hire Date (yyyy-mm-dd): ')
+                                if user_response == '':
+                                    user_response = 'NULL'
                                 values = (user_response, user_id)
                                 if integ(query,values) == True:
                                     print('')
@@ -609,6 +632,8 @@ Admin ID: {sel_admin_id}
                             elif user_response == '7':
                                 query = 'UPDATE Users SET date_created = ? WHERE user_id = ?'
                                 user_response = input('\nNew Date Created (yyyy-mm-dd): ')
+                                if user_response == '':
+                                    user_response = 'NULL'
                                 values = (user_response, user_id)
                                 if integ(query,values) == True:
                                     print('')
@@ -618,6 +643,8 @@ Admin ID: {sel_admin_id}
                             elif user_response == '8':
                                 query = 'UPDATE Users SET role = ? WHERE user_id = ?'
                                 user_response = input('\n(1) Admin\n(2) User\n>>> ')
+                                if user_response == '':
+                                    user_response = 'NULL'
                                 if user_response not in ['1', '2']:
                                     print('\nInvalid Input.\n')
                                     user_response = input('(1) Admin\n(2) User\n>>> ')
@@ -678,7 +705,7 @@ Admin ID: {sel_admin_id}
                             if user_response not in ['1', '2', '3']:
                                 print('\nInvalid Input.\n')
                             elif user_response == '1':
-                                user_response = input('\nNew Competency ID: ')
+                                user_response = input('\nNew Competency ID: ')   
                                 query = 'UPDATE Competencies SET competency_id = ?WHERE competency_id = ?'
                                 values = (user_response, competency_id)
                                 if integ(query,values) == True:
@@ -688,6 +715,8 @@ Admin ID: {sel_admin_id}
                                     print('\nIntegrity Error: please make sure field meets its constraints.\n')
                             elif user_response == '2':
                                 user_response = input('\nNew Name: ')
+                                if user_response == '':
+                                user_response = 'NULL'
                                 query = 'UPDATE Competencies SET name = ? WHERE competency_id = ?'
                                 values = (user_response, competency_id)
                                 if integ(query,values) == True:
@@ -697,6 +726,8 @@ Admin ID: {sel_admin_id}
                                     print('\nIntegrity Error: please make sure field meets its constraints.\n')
                             elif user_response == '3':
                                 user_response = input('\nNew Description: ')
+                                if user_response == '':
+                                user_response = 'NULL'
                                 query = 'UPDATE Competencies SET description = ?'
                                 values = (user_response, competency_id)
                                 if integ(query,values) == True:
@@ -725,6 +756,8 @@ Admin ID: {sel_admin_id}
                                 print('\nInvalid Input.\n')
                             elif user_response == '1':
                                 user_response = input('\nNew Assessment ID: ')
+                                if user_response == '':
+                                user_response = 'NULL'
                                 query = 'UPDATE Assessments SET assessment_id = ? WHERE assessment_id = ?'
                                 values = (user_response, assessment_id)
                                 if integ(query,values) == True:
@@ -734,6 +767,8 @@ Admin ID: {sel_admin_id}
                                     print('\nIntegrity Error: please make sure field meets its constraints.\n')
                             elif user_response == '2':
                                 user_response = input('\nNew Competency ID: ')
+                                if user_response == '':
+                                user_response = 'NULL'
                                 query = 'UPDATE Assessments SET competency_id = ? WHERE assessment_id = ?'
                                 values = (user_response, assessment_id)
                                 if integ(query,values) == True:
@@ -743,6 +778,8 @@ Admin ID: {sel_admin_id}
                                     print('\nIntegrity Error: please make sure field meets its constraints.\n')
                             elif user_response == '3':
                                 user_response = input('\nNew Name: ')
+                                if user_response == '':
+                                user_response = 'NULL'
                                 query = 'UPDATE Assessments SET name = ? WHERE assessment_id = ?'
                                 values = (user_response, assessment_id)
                                 if integ(query,values) == True:
@@ -752,6 +789,8 @@ Admin ID: {sel_admin_id}
                                     print('\nIntegrity Error: please make sure field meets its constraints.\n')
                             elif user_response == '4':
                                 user_response = input('\nNew Date Created (yyyy-mm-dd): ')
+                                if user_response == '':
+                                user_response = 'NULL'
                                 query = 'UPDATE Assessments SET assessment_id = ? WHERE assessment_id = ?'
                                 values = (user_response, assessment_id)
                                 if integ(query,values) == True:
@@ -785,6 +824,8 @@ Admin ID: {sel_admin_id}
                                 print('\nInvalid Input.\n')
                             elif user_response == '1':
                                 user_response = input('\nNew Result ID: ')
+                                if user_response == '':
+                                user_response = 'NULL'
                                 query = 'UPDATE Competency_Assessment_Results SET result_id = ? WHERE result_id = ?'
                                 values = (user_response, result_id)
                                 if integ(query,values) == True:
@@ -794,6 +835,8 @@ Admin ID: {sel_admin_id}
                                     print('\nIntegrity Error: please make sure field meets its constraints.\n')
                             elif user_response == '2':
                                 user_response = input('\nNew User ID: ')
+                                if user_response == '':
+                                user_response = 'NULL'
                                 query = 'UPDATE Competency_Assessment_Results SET user_id = ? WHERE result_id = ?'
                                 values = (user_response, result_id)
                                 if integ(query,values) == True:
@@ -803,6 +846,8 @@ Admin ID: {sel_admin_id}
                                     print('\nIntegrity Error: please make sure field meets its constraints.\n')
                             elif user_response == '3':
                                 user_response = input('\nNew Assessment ID: ')
+                                if user_response == '':
+                                user_response = 'NULL'
                                 query = 'UPDATE Competency_Assessment_Results SET assessment_id = ? WHERE result_id = ?'
                                 values = (user_response, result_id)
                                 if integ(query,values) == True:
@@ -812,6 +857,8 @@ Admin ID: {sel_admin_id}
                                     print('\nIntegrity Error: please make sure field meets its constraints.\n')
                             elif user_response == '4':
                                 user_response = input('\nNew Score: ')
+                                if user_response == '':
+                                user_response = 'NULL'
                                 query = 'UPDATE Competency_Assessment_Results SET score = ? WHERE result_id = ?'
                                 values = (user_response, result_id)
                                 if score not in ['0', '1', '2', '3', '4']:
@@ -824,6 +871,8 @@ Admin ID: {sel_admin_id}
                                         print('\nIntegrity Error: please make sure field meets its constraints.\n')
                             elif user_response == '5':
                                 user_response = input('\nNew Date Taken (yyyy-mm-dd): ')
+                                if user_response == '':
+                                user_response = 'NULL'
                                 query = 'UPDATE Competency_Assessment_Results SET date_taken = ? WHERE result_id = ?'
                                 values = (user_response, result_id)
                                 if integ(query,values) == True:
@@ -833,6 +882,8 @@ Admin ID: {sel_admin_id}
                                     print('\nIntegrity Error: please make sure field meets its constraints.\n')
                             elif user_response == '6':
                                 user_response = input('\nNew Admin ID: ')
+                                if user_response == '':
+                                user_response = 'NULL'
                                 rows = cursor.execute('SELECT user_id FROM Users WHERE role = \'Admin\'').fetchall()
                                 admin_id = str_to_int(user_response)
                                 if admin_id == False:
@@ -855,58 +906,62 @@ Admin ID: {sel_admin_id}
                                             print('\nIntegrity Error: please make sure field meets its constraints.\n')
 
                 elif user_response == '4':
-                    print('\nSearching Users By Name...')
+                    print('\nSearching Users By First OR Last Name...')
                     user_response = input('Search: ')
                     query = 'SELECT user_id, first_name, last_name, hire_date, role, email FROM Users WHERE first_name LIKE ? or last_name LIKE ?'
                     values = (f'%{user_response}%', f'%{user_response}%')
                     rows = cursor.execute(query,values).fetchall()
-                    print(f'\n{'ID':<5}{'Name':<35}{'Hire Date':<15}{'Role':<15}Email')
-                    for row in rows:
-                        sel_user_id = row[0]
-                        sel_first_name = row[1]
-                        sel_last_name = row[2]
-                        sel_hire_date = row[3]
-                        sel_role = row[4]
-                        sel_email = row[5]
-                        if sel_last_name == None:
-                            sel_last_name = 'n/a'
-                        if sel_hire_date == None:
-                            sel_hire_date = 'n/a'
-                        full_name = f'{sel_first_name} {sel_last_name}'
-
-                        print(f'{sel_user_id:<5}{full_name:<35}{sel_hire_date:<15}{sel_role:<15}{sel_email}')
-                    
-                    user_response = input('\nEnter an ID to View a User.\n(Press \'Enter\' to Return to Main Menu.)\n>>> ')
-
-                    if user_response == '':
-                        continue
-                    else:
-                        query = 'SELECT * FROM Users WHERE user_id = ?'
-                        value = (user_response,)
-                        row = cursor.execute(query, value).fetchone()
-                        if row == ():
-                            print('\nNo Such User in Database.\n')
-                        elif row != ():
-                            if row[9] == 0 or row[9] == None:
-                                activeyn = 'No'
-                            else:
-                                activeyn = 'Yes'
-                            
+                    if rows == () or rows == None:
+                        print('\nNo Users Found.\n')
+                    elif rows != () or rows != None:
+                        print(f'\n{'ID':<5}{'Name':<35}{'Hire Date':<15}{'Role':<15}Email')
+                        for row in rows:
+                            sel_user_id = row[0]
+                            sel_first_name = row[1]
                             sel_last_name = row[2]
-                            sel_phone = row[3]
-                            sel_hire_date = row[6]
-                            sel_date_created = row[7]
+                            sel_hire_date = row[3]
+                            sel_role = row[4]
+                            sel_email = row[5]
                             if sel_last_name == None:
                                 sel_last_name = 'n/a'
-                            if sel_phone == None:
-                                sel_phone = 'n/a'
                             if sel_hire_date == None:
                                 sel_hire_date = 'n/a'
-                            if sel_date_created == None:
-                                sel_date_created = 'n/a'
-                            
+                            full_name = f'{sel_first_name} {sel_last_name}'
 
-                            print(f'''User ID: {row[0]}
+                            print(f'{sel_user_id:<5}{full_name:<35}{sel_hire_date:<15}{sel_role:<15}{sel_email}')
+                        
+                        user_response = input('\nEnter an ID to View a User.\n(Press \'Enter\' to Return to Main Menu.)\n>>> ')
+
+                        if user_response == '':
+                            continue
+                        else:
+                            query = 'SELECT * FROM Users WHERE user_id = ?'
+                            value = (user_response,)
+                            row = cursor.execute(query, value).fetchone()
+                            if row == ():
+                                print('\nNo Such User in Database.\n')
+                            elif row != ():
+                                if row[9] == 0 or row[9] == None:
+                                    activeyn = 'No'
+                                else:
+                                    activeyn = 'Yes'
+                                
+                                sel_last_name = row[2]
+                                sel_phone = row[3]
+                                sel_hire_date = row[6]
+                                sel_date_created = row[7]
+                                if sel_last_name == None:
+                                    sel_last_name = 'n/a'
+                                if sel_phone == None:
+                                    sel_phone = 'n/a'
+                                if sel_hire_date == None:
+                                    sel_hire_date = 'n/a'
+                                if sel_date_created == None:
+                                    sel_date_created = 'n/a'
+                                
+
+                                print(f'''
+User ID: {row[0]}
 First Name: {row[1]}
 Last Name: {sel_last_name}
 Phone: {sel_phone}
@@ -1013,6 +1068,7 @@ Active: {activeyn}
                             elif user_response.lower() == 'y':
                                 overwrite_quest = 1
                             elif user_response.lower() == 'n':
+                                overwrite_quest = 0
                                 continue
                         elif is_file != True:
                             overwrite_quest = 1
@@ -1060,6 +1116,7 @@ Active: {activeyn}
                             elif user_response.lower() == 'y':
                                 overwrite_quest = 1
                             elif user_response.lower() == 'n':
+                                overwrite_quest = 0
                                 continue
                         elif is_file != True:
                             overwrite_quest = 1
@@ -1107,6 +1164,7 @@ Active: {activeyn}
                             elif user_response.lower() == 'y':
                                 overwrite_quest = 1
                             elif user_response.lower() == 'n':
+                                overwrite_quest = 0
                                 continue
                         elif is_file != True:
                             overwrite_quest = 1
@@ -1186,6 +1244,7 @@ Active: {activeyn}
                             elif user_response.lower() == 'y':
                                 overwrite_quest = 1
                             elif user_response.lower() == 'n':
+                                overwrite_quest = 0
                                 continue
                         elif is_file != True:
                             overwrite_quest = 1
@@ -1233,6 +1292,7 @@ Active: {activeyn}
                             elif user_response.lower() == 'y':
                                 overwrite_quest = 1
                             elif user_response.lower() == 'n':
+                                overwrite_quest = 0
                                 continue
                         elif is_file != True:
                             overwrite_quest = 1
@@ -1487,8 +1547,9 @@ Active: {activeyn}
                         if sel_phone == None:
                             sel_phone = 'n/a'
                         
-                        print('\nWhat Would You Like to Change?\n')
-                        print(f'''(1) First Name: {row[1]}
+                        print('\nWhat Would You Like to Change?')
+                        print(f'''
+(1) First Name: {row[1]}
 (2) Last Name: {sel_last_name}
 (3) Phone: {sel_phone}
 (4) Email: {row[4]}
