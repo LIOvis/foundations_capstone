@@ -28,7 +28,7 @@ def new_password(saved_password):
     user_attempt_password = input('\nCurrent Password: ')
     new = input('\nNew Password: ')
     if new == '':
-    new = 'NULL'
+        new = 'NULL'
     if check_password(saved_password, user_attempt_password):
         password = bcrypt.hashpw(new.encode('utf-8'), bcrypt.gensalt())
         return password
@@ -438,9 +438,9 @@ Admin ID: {sel_admin_id}
                         elif role == '2':
                             role = 'Admin'
                         if last_name == '':
-                        last_name = 'NULL'
+                            last_name = 'NULL'
                         if phone == '':
-                        phone = 'NULL'
+                            phone = 'NULL'
                         password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
                         query = 'INSERT INTO Users (first_name, last_name, phone, email, password, hire_date, date_created, role, active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
@@ -716,7 +716,7 @@ Admin ID: {sel_admin_id}
                             elif user_response == '2':
                                 user_response = input('\nNew Name: ')
                                 if user_response == '':
-                                user_response = 'NULL'
+                                    user_response = 'NULL'
                                 query = 'UPDATE Competencies SET name = ? WHERE competency_id = ?'
                                 values = (user_response, competency_id)
                                 if integ(query,values) == True:
@@ -727,7 +727,7 @@ Admin ID: {sel_admin_id}
                             elif user_response == '3':
                                 user_response = input('\nNew Description: ')
                                 if user_response == '':
-                                user_response = 'NULL'
+                                    user_response = 'NULL'
                                 query = 'UPDATE Competencies SET description = ?'
                                 values = (user_response, competency_id)
                                 if integ(query,values) == True:
@@ -757,7 +757,7 @@ Admin ID: {sel_admin_id}
                             elif user_response == '1':
                                 user_response = input('\nNew Assessment ID: ')
                                 if user_response == '':
-                                user_response = 'NULL'
+                                    user_response = 'NULL'
                                 query = 'UPDATE Assessments SET assessment_id = ? WHERE assessment_id = ?'
                                 values = (user_response, assessment_id)
                                 if integ(query,values) == True:
@@ -768,7 +768,7 @@ Admin ID: {sel_admin_id}
                             elif user_response == '2':
                                 user_response = input('\nNew Competency ID: ')
                                 if user_response == '':
-                                user_response = 'NULL'
+                                    user_response = 'NULL'
                                 query = 'UPDATE Assessments SET competency_id = ? WHERE assessment_id = ?'
                                 values = (user_response, assessment_id)
                                 if integ(query,values) == True:
@@ -779,7 +779,7 @@ Admin ID: {sel_admin_id}
                             elif user_response == '3':
                                 user_response = input('\nNew Name: ')
                                 if user_response == '':
-                                user_response = 'NULL'
+                                    user_response = 'NULL'
                                 query = 'UPDATE Assessments SET name = ? WHERE assessment_id = ?'
                                 values = (user_response, assessment_id)
                                 if integ(query,values) == True:
@@ -790,7 +790,7 @@ Admin ID: {sel_admin_id}
                             elif user_response == '4':
                                 user_response = input('\nNew Date Created (yyyy-mm-dd): ')
                                 if user_response == '':
-                                user_response = 'NULL'
+                                    user_response = 'NULL'
                                 query = 'UPDATE Assessments SET assessment_id = ? WHERE assessment_id = ?'
                                 values = (user_response, assessment_id)
                                 if integ(query,values) == True:
@@ -825,7 +825,7 @@ Admin ID: {sel_admin_id}
                             elif user_response == '1':
                                 user_response = input('\nNew Result ID: ')
                                 if user_response == '':
-                                user_response = 'NULL'
+                                    user_response = 'NULL'
                                 query = 'UPDATE Competency_Assessment_Results SET result_id = ? WHERE result_id = ?'
                                 values = (user_response, result_id)
                                 if integ(query,values) == True:
@@ -836,7 +836,7 @@ Admin ID: {sel_admin_id}
                             elif user_response == '2':
                                 user_response = input('\nNew User ID: ')
                                 if user_response == '':
-                                user_response = 'NULL'
+                                    user_response = 'NULL'
                                 query = 'UPDATE Competency_Assessment_Results SET user_id = ? WHERE result_id = ?'
                                 values = (user_response, result_id)
                                 if integ(query,values) == True:
@@ -847,7 +847,7 @@ Admin ID: {sel_admin_id}
                             elif user_response == '3':
                                 user_response = input('\nNew Assessment ID: ')
                                 if user_response == '':
-                                user_response = 'NULL'
+                                    user_response = 'NULL'
                                 query = 'UPDATE Competency_Assessment_Results SET assessment_id = ? WHERE result_id = ?'
                                 values = (user_response, result_id)
                                 if integ(query,values) == True:
@@ -858,7 +858,7 @@ Admin ID: {sel_admin_id}
                             elif user_response == '4':
                                 user_response = input('\nNew Score: ')
                                 if user_response == '':
-                                user_response = 'NULL'
+                                    user_response = 'NULL'
                                 query = 'UPDATE Competency_Assessment_Results SET score = ? WHERE result_id = ?'
                                 values = (user_response, result_id)
                                 if score not in ['0', '1', '2', '3', '4']:
@@ -872,7 +872,7 @@ Admin ID: {sel_admin_id}
                             elif user_response == '5':
                                 user_response = input('\nNew Date Taken (yyyy-mm-dd): ')
                                 if user_response == '':
-                                user_response = 'NULL'
+                                    user_response = 'NULL'
                                 query = 'UPDATE Competency_Assessment_Results SET date_taken = ? WHERE result_id = ?'
                                 values = (user_response, result_id)
                                 if integ(query,values) == True:
@@ -883,7 +883,7 @@ Admin ID: {sel_admin_id}
                             elif user_response == '6':
                                 user_response = input('\nNew Admin ID: ')
                                 if user_response == '':
-                                user_response = 'NULL'
+                                    user_response = 'NULL'
                                 rows = cursor.execute('SELECT user_id FROM Users WHERE role = \'Admin\'').fetchall()
                                 admin_id = str_to_int(user_response)
                                 if admin_id == False:
@@ -1101,7 +1101,7 @@ Active: {activeyn}
                     elif user_response == '2':
                         user_response = input('\nCompetency ID: ')
                         overwrite_quest = 0
-                        query = 'SELECT * FROM Competency_Assessment_Results WHERE competency_id = ?'
+                        query = 'SELECT result_id, user_id, car.assessment_id, score, date_taken, admin_id FROM Competency_Assessment_Results car JOIN Assessments a ON car.assessment_id = a.assessment_id WHERE competency_id = ?'
                         values = (user_response,)
                         rows = cursor.execute(query, values).fetchall()
                         file_name = input('\nFile Name: ')
@@ -1147,11 +1147,9 @@ Active: {activeyn}
                                         data = [row[1], row[2], row[3], row[4], admin_id]
                                         writer.writerow(data)
                     elif user_response == '3':
-                        user_response = input('\nUser ID: ')
                         overwrite_quest = 0
-                        query = 'SELECT * FROM Users WHERE user_id = ?'
-                        values = (user_response,)
-                        rows = cursor.execute(query, values).fetchall()
+                        query = 'SELECT * FROM Users'
+                        rows = cursor.execute(query).fetchall()
                         file_name = input('\nFile Name: ')
                         if '.csv' not in file_name:
                             file_name += '.csv'
@@ -1192,7 +1190,7 @@ Active: {activeyn}
                                         if row[7] == None:
                                             date_created = ''
                                         elif row[7] != None:
-                                            date_createde = row[7]
+                                            date_created = row[7]
                                         if row[9] == None:
                                             active = 0
                                         elif row[9] != None:
@@ -1227,11 +1225,9 @@ Active: {activeyn}
                                         data = [row[1], last_name, phone, row[4], row[5], hire_date, date_created, row[8], active]
                                         writer.writerow(data)
                     elif user_response == '4':
-                        user_response = input('\nCompetency ID: ')
                         overwrite_quest = 0
-                        query = 'SELECT * Competencies WHERE competency_id = ?'
-                        values = (user_response,)
-                        rows = cursor.execute(query, values).fetchall()
+                        query = 'SELECT * FROM Competencies'
+                        rows = cursor.execute(query).fetchall()
                         file_name = input('\nFile Name: ')
                         if '.csv' not in file_name:
                             file_name += '.csv'
@@ -1261,7 +1257,7 @@ Active: {activeyn}
                                             description = ''
                                         elif row[2] != None:
                                             description = row[2]
-                                        data = [row[0], row[1], row[2], row[3], row[4], admin_id]
+                                        data = [row[0], row[1], description]
                                         writer.writerow(data)
                             elif user_response.lower() == 'n':
                                 with open(file_name, 'w', newline='') as write_file:
@@ -1275,11 +1271,9 @@ Active: {activeyn}
                                         data = [row[1], description]
                                         writer.writerow(data)
                     elif user_response == '5':
-                        user_response = input('\nAssessment ID: ')
                         overwrite_quest = 0
-                        query = 'SELECT * FROM Assessments WHERE assessment_id = ?'
-                        values = (user_response,)
-                        rows = cursor.execute(query, values).fetchall()
+                        query = 'SELECT * FROM Assessments'
+                        rows = cursor.execute(query).fetchall()
                         file_name = input('\nFile Name: ')
                         if '.csv' not in file_name:
                             file_name += '.csv'
@@ -1450,8 +1444,8 @@ Active: {activeyn}
                                 csvreader = csv.reader(read_file)
                                 header = next(csvreader)
                                 print(header)
-                                if header != ['user_id', 'assessment_id', 'score', 'date_taken', 'admin_id'] and header != ['user_id', 'assessment_id', 'score', 'date_taken']:
-                                    print('\nHeader Must Be user_id,assessment_id,score, date_taken,admin_id\nor\nuser_id,assessment_id,score, date_taken\n')
+                                if header != ['user_id', 'assessment_id', 'score', 'date_taken', 'admin_id'] and header != ['result_id', 'user_id', 'assessment_id', 'score', 'date_taken', 'admin_id']:
+                                    print('\nHeader Must Be user_id,assessment_id,score,date_taken,admin_id\nor\nresult_id,user_id,assessment_id,score,date_taken,admin_id\n')
                                 elif header == ['user_id', 'assessment_id', 'score', 'date_taken', 'admin_id']:
                                     query = 'INSERT INTO Competency_Assessment_Results (user_id, assessment_id, score, date_taken, admin_id) VALUES (?, ?, ?, ?, ?)'
                                     for row in csvreader:
@@ -1461,10 +1455,10 @@ Active: {activeyn}
                                         else:
                                             print(f'Record [{row[0]}, {row[1]}, {row[2]}, {row[3]}, {row[4]}] Raised an Integrity Error.\n')
 
-                                elif header == ['user_id', 'assessment_id', 'score', 'date_taken']:
-                                    query = 'INSERT INTO Competency_Assessment_Results (user_id, assessment_id, score, date_taken) VALUES (?, ?, ?, ?)'
+                                elif header == ['result_id', 'user_id', 'assessment_id', 'score', 'date_taken', 'admin_id']:
+                                    query = 'INSERT INTO Competency_Assessment_Results (result_id, user_id, assessment_id, score, date_taken, admin_id) VALUES (?, ?, ?, ?, ?, ?)'
                                     for row in csvreader:
-                                        values = (row[0], row[1], row[2], row[3])
+                                        values = (row[0], row[1], row[2], row[3], row[4], row[5])
                                         if integ(query, values) == True:
                                             con.commit()
                                         else:
