@@ -1262,7 +1262,7 @@ Active: {activeyn}
                             elif user_response.lower() == 'n':
                                 with open(file_name, 'w', newline='') as write_file:
                                     writer = csv.writer(write_file)
-                                    writer.writerow(['competency_id', 'name', 'description'])
+                                    writer.writerow(['name', 'description'])
                                     for row in rows:
                                         if row[2] == None:
                                             description = ''
